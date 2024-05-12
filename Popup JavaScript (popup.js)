@@ -1,0 +1,14 @@
+// Get contact details from background script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'openContactPopup') {
+    const contactDetails = request.contactDetails;
+    document.getElementById('contact-details').innerHTML = `
+      <h2>${contactDetails.name}</h2>
+      <p>Notes: <textarea id="notes">${contactDetails.notes}</textarea></p>
+    `;
+  }
+});
+
+// Save notes to database
+document.getElementById('notes').addEventListener('change', () => {
+  const contactId = document.getElementById
