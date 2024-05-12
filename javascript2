@@ -1,0 +1,45 @@
+// Initialize database
+const db = new Dexie('whatsapp_enhancer_db');
+db.version(1).stores({
+  contacts: '++id,contactId,name,notes',
+  filters: '++id,name,contacts'
+});
+
+// Handle messages from content script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  switch (request.action) {
+    case 'updateFilters':
+      updateFilters(request.filters);
+      break;
+    case 'openContact':
+      openContact(request.contactId);
+      break;
+  }
+});
+
+// Update filters
+function updateFilters(filters) {
+  // Save filters to database
+  db.filters.clear();
+  Object.keys(filters).forEach((filterName) => {
+    db.filters.add({ name: filterName, contacts: filters[filterName].map((chat) => chat.getAttribute('data-contact-id')) });
+  });
+}
+
+// Open contact
+function openContact(contactId) {
+  // Get contact details from WhatsApp
+  const contactDetails = getContactDetails(contactId);
+
+  // Save contact details to database
+  db.contacts.put({ contactId, name: contactDetails.name, notes: '' });
+
+  // Send contact details to popup
+  chrome.runtime.sendMessage({ action: 'openContactPopup', contactDetails });
+}
+
+// Get contact details from WhatsApp
+function getContactDetails(contactId) {
+  // Use WhatsApp Web API to get contact details
+  // ...
+}
