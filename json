@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,           
+  "name": "WhatsApp Enhancer",
+  "version": "1.0",
+  "description": "Enhance WhatsApp Web with custom filters and contact management",
+  "permissions": ["activeTab", "storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["backgroundScript.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  }
+}
